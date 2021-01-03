@@ -8,19 +8,28 @@ class LoginForm extends Component{
     constructor(props){
         super(props);
         this.state={
-            username:""
+            username:"",
+            password:"",
+            code:"",
+            module:"login"
         };
     }
     //登录事件
     onFinish=(value)=>{
-        Login().then(response=>{
+        const requestData={
+            username:this.state.username,
+            password:this.state.password,
+            code:this.state.code
+        }
+        Login(requestData).then(response=>{
+            message.success(response.data.message)
             console.log(response)
         }).catch(error=>{
-            
         })
         console.log('hahh',value);
     }
     //获取验证码
+
     getCode=()=>{
         if(!this.state.username){
             message.warning('用户名不能为空',1);
@@ -31,6 +40,7 @@ class LoginForm extends Component{
             module:"login"
         }
         GetCode(requestData).then(response=>{
+            message.success(response.data.message)
             console.log(response)
         }).catch(error=>{
             console.log(error)
@@ -38,10 +48,23 @@ class LoginForm extends Component{
        
     }
     //输入处理
-    inputChange=(e)=>{
+    //输入处理
+    inputChangeUsername=(e)=>{
         let value=e.target.value;
         this.setState({
             username:value
+        })
+    }
+    inputChangePassword=(e)=>{
+        let value=e.target.value;
+        this.setState({
+            password:value
+        })
+    }
+    inputChangeCode=(e)=>{
+        let value=e.target.value;
+        this.setState({
+            code:value
         })
     }
     changeformtype=()=>{
@@ -65,7 +88,7 @@ class LoginForm extends Component{
                         </Col>
                         <Col span={16}>
                         <Form.Item name="username" rules={[{ required: true, message: 'Please input your username!' }]}>                          
-                            <Input value={this.state.username} onChange={this.inputChange}
+                            <Input  onChange={this.inputChangeUsername}
                             prefix={<UserOutlined className="site-form-item-icon" />}placeholder="Username"/>                      
                         </Form.Item>
                         </Col>
@@ -75,15 +98,15 @@ class LoginForm extends Component{
                         </Col>
                         <Col span={16}>
                         <Form.Item name="password" rules={[{ required: true, message: 'Please input your password!' }]}>                          
-                            <Input
+                            <Input type="password" onChange={this.inputChangePassword}
                             prefix={<UnlockOutlined  className="site-form-item-icon" />}placeholder="Password"/>                      
                         </Form.Item>
                         </Col>
                         </Row>
                         <Row>
                         <Col span={12}>
-                        <Form.Item name="code" rules={[{ required: true, message: 'Please input code!' }]}>                          
-                            <Input 
+                        <Form.Item name="code" rules={[{ required: true, message: '请输入长度为6的验证码!',len:6 }]}>                          
+                            <Input onChange={this.inputChangeCode}
                             prefix={<FontColorsOutlined  className="site-form-item-icon" />} placeholder="code"/>                      
                         </Form.Item>
                         </Col> 
